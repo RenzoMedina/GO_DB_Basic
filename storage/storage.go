@@ -30,7 +30,7 @@ func NewPostgreDB() {
 		if err = db.Ping(); err != nil {
 			log.Fatalf("can't do ping: %v", err)
 		}
-		fmt.Println("Connection succesfull ")
+		fmt.Println("Connection successfull ")
 	})
 }
 

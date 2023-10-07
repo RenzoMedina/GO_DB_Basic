@@ -10,3 +10,17 @@ const (
 	conPos = "postgres://(userdb):(password)@localhost:(puerto)/(nameschema)?sslmode=disable"
 )
 ```
+Para instanciar nuestra conexión se agrega el siguiente codigo
+``` go
+storage.NewPostgreDB()
+```
+
+Para poder correr la migración de product, implementamos el siguiente codigo
+``` go
+    storageProd := storage.NewPsqlProduct(storage.Pool())
+	serviceProd := product.NewService(storageProd)
+
+	if err := serviceProd.Migrate(); err != nil {
+		log.Fatalf("product.Migrate(): %v", err)
+	}
+```
