@@ -3,6 +3,7 @@ package storage
 import (
 	"database/sql"
 	"fmt"
+	"go-db/pkg/product"
 )
 
 const (
@@ -15,6 +16,10 @@ const (
 		update_at TIMESTAMP,
 		CONSTRAINT products_id_pk PRIMARY KEY (id)
 	)`
+	psqlInsertProduct = ` INSERT INTO products (name,observations, price,created_at) VALUES ($1,$2,$3,$4)
+				RETURNING id
+		
+	`
 )
 
 // PsqlProduct use for work with postgres - product
@@ -40,5 +45,27 @@ func (p *PsqlProduct) Migrate() error {
 		return err
 	}
 	fmt.Println("migrate of product successfull")
+	return nil
+}
+
+func (p *PsqlProduct) Create(m *product.Model) error {
+
+	stament, err := p.db.Prepare(psqlInsertProduct)
+	if err != nil {
+		return err
+	}
+	defer stament.Close()
+
+	err = stament.QueryRow(
+		m.Name,
+		stringToNull(m.Observations),
+		m.Price,
+		m.CreateAt,
+	).Scan(&m.Id)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Element was successfull")
 	return nil
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"go-db/pkg/product"
 	"go-db/storage"
 	"log"
@@ -13,8 +14,14 @@ func main() {
 	storageProd := storage.NewPsqlProduct(storage.Pool())
 	serviceProd := product.NewService(storageProd)
 
-	if err := serviceProd.Migrate(); err != nil {
-		log.Fatalf("product.Migrate(): %v", err)
+	model := &product.Model{
+		Name:         "Curso de moodle basic",
+		Observations: "Creación de plugins ",
+		Price:        80,
+	}
+	if err := serviceProd.Create(model); err != nil {
+		log.Fatalf("product.Create(): %v", err)
 	}
 
+	fmt.Printf("%v\n", model)
 }
